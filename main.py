@@ -34,14 +34,18 @@ print(f"📗 Percentage: {percentage:.2f}%")
 def predict_next_score(last_marks):
     """
     Predicts the next score using the student's last 5 marks.
-    Uses a simple linear regression on their own marks.
+    Ensures the prediction stays within the min and max of existing scores.
     """
-    X = np.arange(1, len(last_marks) + 1).reshape(-1, 1)  # 1,2,3,4,5
+    X = np.arange(1, len(last_marks) + 1).reshape(-1, 1)
     y = np.array(last_marks)
     model = LinearRegression()
     model.fit(X, y)
-    next_score = model.predict([[len(last_marks) + 1]])
-    return next_score[0]
+    next_score = model.predict([[len(last_marks) + 1]])[0]
+
+    # Keep the prediction between min and max marks
+    next_score = max(min(next_score, max(last_marks)), min(last_marks))
+    return next_score
+
 
 predicted_score = predict_next_score(marks)
 print(f"\n🤖 Predicted Next Score: {predicted_score:.2f}")
